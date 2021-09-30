@@ -1,0 +1,51 @@
+# Docker Compose file
+version: '3'
+
+#Definindo serviços
+services:
+
+  #PostgreSQL Banco de dados para o aplicativo
+  postgres:
+    image: "postgres:9.6-alpine"
+    container_name: postgres
+    #Volume montado para banco de dados para armazenamento
+    volumes:
+      - data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432 # Encaminhe a porta exposta 5432 no contêiner para a porta 5432 na máquina host
+
+    #Variável de ambiente para nome de banco de dados, usuário e senha
+    environment:
+      - POSTGRES_DB=luiz
+      - POSTGRES_USER=luiz
+      - POSTGRES_PASSWORD=luiz
+
+  #Back-end Spring Boot
+  app:
+    #O arquivo docker em app cria o jar e fornece a imagem docker com o seguinte nome
+    build: ./app
+    container_name: app
+
+    #Variáveis ​​de ambiente para o aplicativo Spring Boot.
+    environment:
+      - DB_SERVER=postgres
+      - POSTGRES_DB=luiz
+      - POSTGRES_USER=luiz
+      - POSTGRES_PASSWORD=luiz
+    ports:
+      - 8080:8080 # Encaminhe a porta exposta 8080 no contêiner para a porta 8080 na máquina host
+    links:
+      - postgres
+
+  #Fron-end Angular 
+  ui:
+    build: ./ui
+    container_name: ui
+    ports:
+      - 4200:80
+    links:
+      - app
+
+#Volumes para dados do banco de dados
+volumes:
+  data:
