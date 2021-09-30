@@ -21,10 +21,10 @@ services:
       - POSTGRES_PASSWORD=luiz
 
   #Back-end Spring Boot
-  app:
+  mts.api:
     #O arquivo docker em app cria o jar e fornece a imagem docker com o seguinte nome
-    build: ./app
-    container_name: app
+    build: ./mts.api
+    container_name: mts.api
 
     #Variáveis ​​de ambiente para o aplicativo Spring Boot.
     environment:
@@ -38,13 +38,13 @@ services:
       - postgres
 
   #Fron-end Angular 
-  ui:
-    build: ./ui
+  mts-ui:
+    build: ./mts-ui
     container_name: ui
     ports:
       - 4200:80
     links:
-      - app
+      - mts.api
 
 #Volumes para dados do banco de dados
 volumes:
